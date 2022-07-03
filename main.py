@@ -20,7 +20,7 @@ get_color = lambda: (random.randrange(30, 256), random.randrange(30, 256), rando
 color = get_color()
 count, speed, limit = 0, 60, 2000
 p = [[0 for i in range(WIDTH)] for i1 in range(HEIGHT)]
-pygame.display.set_caption('Title of window')
+pygame.display.set_caption('Catetris')
 screen = pygame.display.set_mode(RES)
 gameScreen = pygame.Surface(GAME_RES)
 menuscreen = pygame.Surface(GAME_RES)
