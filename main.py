@@ -11,8 +11,8 @@ GAME_RES = WIDTH * TILE, HEIGHT * TILE
 FPS = 60
 RES = 1100, 753
 pygame.init()
-main_font = pygame.font.Font('fonts/Cheltenham-Normal.ttf', 65)
-small_font= pygame.font.Font('fonts/Cheltenham-Normal.ttf', 30)
+main_font = pygame.font.Font('freesansbold.ttf', 65)
+small_font= pygame.font.Font('freesansbold.ttf', 20)
 title = main_font.render('CATETRIS', True, pygame.Color('black'))
 titleScore = main_font.render('score', True, pygame.Color('red'))
 titleRecord = main_font.render('record', True, pygame.Color('green'))
@@ -50,6 +50,45 @@ def borders():
     return False
 
 
+def menuinit():
+    screen.blit(menuscreen, (45, 156))
+    menuscreen.blit(bg3, (0, 0))
+    menuscreen.blit(small_font.render('Choose difficulty, 1-5', True, pygame.Color('black')), (60, 180))
+    menuscreen.blit(small_font.render('Press number 1-5 on', True, pygame.Color('black')), (60, 240))
+    menuscreen.blit(small_font.render('keyboard to choose it', True, pygame.Color('black')), (60, 270))
+    menuscreen.blit(small_font.render('and start a game', True, pygame.Color('black')), (60, 300))
+    pygame.display.flip()
+
+
+def menu():
+    menuinit()
+    ext= False;
+    global speed
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                exit("exit")
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_1:
+                    speed = 10
+                    ext=True
+                if event.key == pygame.K_2:
+                    speed = 40
+                    ext = True
+                if event.key == pygame.K_3:
+                    speed = 80
+                    ext = True
+                if event.key == pygame.K_4:
+                    speed = 100
+                    ext = True
+                if event.key == pygame.K_5:
+                    speed = 130
+                    ext = True
+
+        if ext:
+            break
+
+
 def record():
     try:
         with open('record') as f:
@@ -71,12 +110,24 @@ figure = deepcopy(random.choice(figures))
 # score
 score, line = 0, 0
 scores = {0: 0, 1: 100, 2: 300, 3: 700, 4: 1500}
+firstLaunch = True
+
 while True:
     recordd = record()
     screen.blit(bg1, (0, 0))
+    screen.blit(title, (350, 20))
+    screen.blit(titleScore, (420, 90))
+    screen.blit(main_font.render(str(score), True, pygame.Color('black')), (420, 170))
+    screen.blit(titleRecord, (700, 90))
+    screen.blit(main_font.render(str(recordd), True, pygame.Color('black')), (950, 90))
+
+    if firstLaunch:
+        menuinit()
+        menu()
+        firstLaunch = False
+
     screen.blit(gameScreen, (45, 156))
     gameScreen.blit(bg2, (0, 0))
-
 
     # delay
     for i in range(line):
@@ -158,13 +209,6 @@ while True:
     score += scores[line]
     # delete full lines
 
-
-    screen.blit(title, (350, 20))
-    screen.blit(titleScore, (420, 90))
-    screen.blit(main_font.render(str(score), True, pygame.Color('black')), (420, 170))
-    screen.blit(titleRecord, (700, 90))
-    screen.blit(main_font.render(str(recordd), True, pygame.Color('black')), (950, 90))
-    pygame.display.flip()
     # game over :(
     for i in range(WIDTH):
         if p[0][i]:
@@ -172,16 +216,9 @@ while True:
             p = [[0 for i in range(WIDTH)] for i1 in range(HEIGHT)]
             count, speed, limit = 0, 60, 2000
             score = 0
-            screen.blit(menuscreen, (45, 156))
-            menuscreen.blit(bg3, (0, 0))
-            menuscreen.blit(small_font.render('Play again?', True, pygame.Color('black')), (60, 180))
-            pygame.display.flip()
-            time.sleep(3)
+            menu()
 
-
-
-
-
+    pygame.display.flip()
 
 clock.tick(FPS)
 
