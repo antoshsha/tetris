@@ -5,14 +5,13 @@ WIDTH, HEIGHT = 10, 20
 TILE = 30
 GAME_RES = WIDTH*TILE, HEIGHT*TILE
 FPS = 60
-RES = 1500, 756
-
+RES = 1100, 756
 pygame.init()
 main_font = pygame.font.Font('fonts/Cheltenham-Normal.ttf', 65)
 title = main_font.render('CATETRIS', True, pygame.Color('black'))
 titleScore = main_font.render('score', True, pygame.Color('red'))
 titleRecord = main_font.render('record', True, pygame.Color('green'))
-get_color = lambda : (random.randrange(30,256), random.randrange(30, 256), random.randrange(30, 256))
+get_color = lambda : (random.randrange(30, 256), random.randrange(30, 256), random.randrange(30, 256))
 color = get_color()
 count, speed, limit = 0, 60, 2000
 p = [[0 for i in range(WIDTH)] for i1 in range(HEIGHT)]
@@ -68,8 +67,8 @@ score, line = 0, 0
 scores = {0: 0, 1: 100, 2: 300, 3: 700, 4: 1500}
 while True:
     recordd = record()
-    screen.blit(bg1, (120, 0))
-    screen.blit(gameScreen, (0, 20))
+    screen.blit(bg1, (0, 0))
+    screen.blit(gameScreen, (45, 156))
     gameScreen.blit(bg2, (0, 0))
 
 #delay
@@ -159,6 +158,7 @@ while True:
             p = [[0 for i in range(WIDTH)] for i1 in range(HEIGHT)]
             count, speed, limit = 0, 60, 2000
             score = 0
+    # game over :(
     screen.blit(title, (350, 20))
     screen.blit(titleScore, (420, 90))
     screen.blit(main_font.render(str(score), True, pygame.Color('black')), (420, 170))
@@ -166,5 +166,5 @@ while True:
     screen.blit(main_font.render(str(recordd), True, pygame.Color('black')), (950, 90))
     pygame.display.flip()
 
-    clock.tick(FPS)
+clock.tick(FPS)
 
