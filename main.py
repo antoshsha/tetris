@@ -24,6 +24,7 @@ pygame.display.set_caption('Title of window')
 screen = pygame.display.set_mode(RES)
 gameScreen = pygame.Surface(GAME_RES)
 menuscreen = pygame.Surface(GAME_RES)
+restartscreen = pygame.Surface(GAME_RES)
 clock = pygame.time.Clock()
 grid = [pygame.Rect(x * TILE, y * TILE, TILE, TILE) for x in range(WIDTH) for y in range(HEIGHT)]
 figuresCoord = [
@@ -49,14 +50,42 @@ def borders():
         return True
     return False
 
+def initrestart():
+    screen.blit(restartscreen, (45, 156))
+    restartscreen.blit(bg3, (0, 0))
+    restartscreen.blit(main_font.render('GAME', True, pygame.Color('red')), (53, 140))
+    restartscreen.blit(main_font.render('OVER', True, pygame.Color('red')), (60, 190))
+    restartscreen.blit(small_font.render('to quit press q', True, pygame.Color('black')), (80, 280))
+    restartscreen.blit(small_font.render('or press any other  ', True, pygame.Color('black')), (60, 320))
+    restartscreen.blit(small_font.render('button to play again', True, pygame.Color('black')), (50, 360))
+    pygame.display.flip()
+
+def restart():
+    initrestart()
+
+    ext= False
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                exit("exit")
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_q:
+                    exit("exit")
+                    ext = True
+                if event.key != pygame.K_q and event.key != pygame.K_LEFT and event.key != pygame.K_RIGHT and event.key != pygame.K_UP and event.key != pygame.K_DOWN:
+                    ext= True
+        if ext:
+            break
+
+
 
 def menuinit():
     screen.blit(menuscreen, (45, 156))
     menuscreen.blit(bg3, (0, 0))
-    menuscreen.blit(small_font.render('Choose difficulty, 1-5', True, pygame.Color('black')), (60, 180))
+    menuscreen.blit(small_font.render('Choose difficulty, 1-5', True, pygame.Color('black')), (55, 210))
     menuscreen.blit(small_font.render('Press number 1-5 on', True, pygame.Color('black')), (60, 240))
-    menuscreen.blit(small_font.render('keyboard to choose it', True, pygame.Color('black')), (60, 270))
-    menuscreen.blit(small_font.render('and start a game', True, pygame.Color('black')), (60, 300))
+    menuscreen.blit(small_font.render('keyboard to choose it', True, pygame.Color('black')), (55, 270))
+    menuscreen.blit(small_font.render('and start a game', True, pygame.Color('black')), (70, 300))
     pygame.display.flip()
 
 
@@ -69,6 +98,8 @@ def menu():
             if event.type == pygame.QUIT:
                 exit("exit")
             if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_q:
+                    exit("exit")
                 if event.key == pygame.K_1:
                     speed = 10
                     ext=True
@@ -216,6 +247,8 @@ while True:
             p = [[0 for i in range(WIDTH)] for i1 in range(HEIGHT)]
             count, speed, limit = 0, 60, 2000
             score = 0
+            initrestart()
+            restart()
             menu()
 
     pygame.display.flip()
