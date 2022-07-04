@@ -11,6 +11,7 @@ GAME_RES = WIDTH * TILE, HEIGHT * TILE
 FPS = 60
 RES = 1100, 753
 pygame.init()
+instr_button_visible= True
 main_font = pygame.font.Font('freesansbold.ttf', 65)
 small_font= pygame.font.Font('freesansbold.ttf', 20)
 title = main_font.render('CATETRIS', True, pygame.Color('black'))
@@ -65,9 +66,14 @@ def restart():
 
     ext= False
     while True:
+        mouse = pygame.mouse.get_pos()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 exit("exit")
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if 600 <= mouse[0] <= 736 and 500 <= mouse[1] <= 534:
+                    instr_button_visible = False
+
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_q:
                     exit("exit")
@@ -80,6 +86,17 @@ def restart():
 
 
 def menuinit():
+    if (not instr_button_visible):
+        s = "welcome to CATETRIS\nthis game is a subversion of popular game called tetris\nto start playing follow the instructions written on the gamescreen\nkey buttons:\n1) press \"right\" and \"left\" arrows to move the falling brick.\n2) press \"up\" arrow to rotate the falling brick\n3) press \"down\" arrow to make your falling brick fall faster\nyou earn score points when you complete 1 or more horizontal lines\nif you complete:1 line at a time - 100 points\n2 lines at a time  - 300 points\n3 lines at a time  - 700 points\n4 lines at a time - 1500 points\nWe wish you luck and hope you will enjoy playing our CATETRIS game\n Press [space] to hide"
+        guide = small_font.render(s, True, pygame.Color('black'))
+        pygame.draw.rect(screen, pygame.Color('grey'), pygame.Rect(380, 380, 730, 310))
+        blit_text(screen, s, (400, 400), small_font)
+    if (instr_button_visible):
+        instr_button = pygame.Rect(600, 500, 136, 34)
+        pygame.draw.rect(screen, pygame.Color("grey"), instr_button)
+        instr_text = small_font.render('Instructions', True, pygame.Color('black'))
+        screen.blit(instr_text, (607, 507))
+
     screen.blit(menuscreen, (45, 156))
     menuscreen.blit(bg3, (0, 0))
     menuscreen.blit(small_font.render('Choose difficulty, 1-5', True, pygame.Color('black')), (55, 210))
@@ -89,15 +106,45 @@ def menuinit():
     pygame.display.flip()
 
 
+
+def blit_text(surface, text, pos, font, color=pygame.Color('black')):
+    words = [word.split('\n') for word in text.splitlines()]  # 2D array where each row is a list of words.
+    space = font.size(' ')[0]  # The width of a space.
+    max_width, max_height = surface.get_size()
+    x, y = pos
+    for line in words:
+        for word in line:
+            word_surface = font.render(word, 0, color)
+            word_width, word_height = word_surface.get_size()
+            if x + word_width >= max_width:
+                x = pos[0]  # Reset the x.
+                y += word_height  # Start on new row.
+            surface.blit(word_surface, (x, y))
+            x += word_width + space
+        x = pos[0]  # Reset the x.
+        y += word_height  # Start on new row.
+
+
 def menu():
     menuinit()
-    ext= False;
+    global instr_button_visible
+    ext= False
     global speed
     while True:
+        mouse = pygame.mouse.get_pos()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 exit("exit")
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if 600 <= mouse[0] <= 736 and 500 <= mouse[1] <= 534:
+                    instr_button_visible = False
+                    render_texts()
+                    menuinit()
             if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    instr_button_visible = True
+                    render_texts()
+                    menuinit()
                 if event.key == pygame.K_q:
                     exit("exit")
                 if event.key == pygame.K_1:
@@ -143,7 +190,9 @@ score, line = 0, 0
 scores = {0: 0, 1: 100, 2: 300, 3: 700, 4: 1500}
 firstLaunch = True
 
-while True:
+
+def render_texts():
+    global recordd
     recordd = record()
     screen.blit(bg1, (0, 0))
     screen.blit(title, (350, 20))
@@ -151,6 +200,9 @@ while True:
     screen.blit(main_font.render(str(score), True, pygame.Color('black')), (420, 170))
     screen.blit(titleRecord, (700, 90))
     screen.blit(main_font.render(str(recordd), True, pygame.Color('black')), (950, 90))
+
+while True:
+    render_texts()
 
     if firstLaunch:
         menuinit()
@@ -164,10 +216,13 @@ while True:
     for i in range(line):
         pygame.time.wait(200)
     xx, r = 0, False
-
+    mouse = pygame.mouse.get_pos()
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             exit("exit")
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if 600 <= mouse[0] <= 736 and 500 <= mouse[1] <= 534:
+                instr_button_visible = False
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
                 xx = -1
